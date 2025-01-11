@@ -1,13 +1,10 @@
 package com.example.snackbarmodalnavigationdrawer
 
-import android.content.ClipData
 import android.content.Intent
-import android.media.RouteListingPreference
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,11 +26,13 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -53,15 +52,18 @@ class MainActivity : ComponentActivity() {
             val notesList = rememberSaveable {
                 mutableListOf(Note("Добро пожаловать!", "Напишите свою первую заметку!"))
             }
-            val secondNotesList: List<Note>? =
-                intent.getSerializableExtra("secondNotesList") as? List<Note>
-            secondNotesList?.let {
-                notesList.clear()
-                notesList.addAll(it)
+            var secondNotesList by rememberSaveable { mutableStateOf<List<Note>?>(null) }
+
+            if (secondNotesList == null) {
+                secondNotesList = intent?.getSerializableExtra("secondNotesList") as? List<Note>
+                secondNotesList?.let { notes ->
+                    notesList.clear()
+                    notesList.addAll(notes)
+                }
             }
-                val notesStateList = remember { mutableStateListOf<Note>() }
-                notesStateList.clear()
-                notesStateList.addAll(notesList)
+            val notesStateList = remember { mutableStateListOf<Note>() }
+            notesStateList.clear()
+            notesStateList.addAll(notesList)
             val selectedItem = remember {
                 mutableStateOf(notesStateList[0])
             }
@@ -75,7 +77,9 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.padding(it),
                     drawerState = drawerState,
                     drawerContent = {
-                        ModalDrawerSheet {
+                        ModalDrawerSheet(
+                            modifier = Modifier.padding(end = 40.dp)
+                        ) {
                             notesStateList.forEach { item ->
                                 NavigationDrawerItem(
                                     label = {
@@ -120,10 +124,10 @@ class MainActivity : ComponentActivity() {
                         Box(
                             modifier = Modifier.fillMaxSize()
                         ) {
-                            LazyColumn (
+                            LazyColumn(
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                item{
+                                item {
                                     IconButton(
                                         onClick = {
                                             scope.launch { drawerState.open() }
@@ -158,6 +162,8 @@ class MainActivity : ComponentActivity() {
                                         Intent(this@MainActivity, SecondActivity::class.java)
                                     intent.putExtra("notesList", ArrayList(notesList))
                                     startActivity(intent)
+                                    finish()
+                                    secondNotesList=null
                                 },
                                 content = { Icon(Icons.Filled.Add, "Добавить") }
                             )

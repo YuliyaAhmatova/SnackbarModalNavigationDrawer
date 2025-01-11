@@ -78,15 +78,12 @@ class SecondActivity : ComponentActivity() {
                                 )
                                 .padding(10.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color.Black,
                                 unfocusedBorderColor = Color.Black
                             ),
-                            placeholder = {
+                            label = {
                                 Text(
                                     text = "Заголовок",
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    fontSize = 22.sp
+                                    fontSize = 18.sp
                                 )
                             }
                         )
@@ -104,15 +101,12 @@ class SecondActivity : ComponentActivity() {
                                 )
                                 .padding(10.dp),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color.Black,
                                 unfocusedBorderColor = Color.Black
                             ),
-                            placeholder = {
+                            label = {
                                 Text(
                                     text = "Основное содержимое",
-                                    modifier = Modifier
-                                        .fillMaxWidth(),
-                                    fontSize = 22.sp
+                                    fontSize = 18.sp
                                 )
                             }
                         )
@@ -121,8 +115,8 @@ class SecondActivity : ComponentActivity() {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(vertical = 20.dp), // добавим немного вертикального отступа
-                            contentAlignment = Alignment.Center // Центрируем кнопку по горизонтали
+                                .padding(vertical = 20.dp),
+                            contentAlignment = Alignment.Center
                         ) {
                             Button(
                                 onClick = {
